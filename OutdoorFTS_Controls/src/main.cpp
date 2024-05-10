@@ -1,4 +1,7 @@
 #include <SPI.h>
+#include "communicate.hpp"
+#include "drive.hpp"
+#include "steer.hpp"
 
 #define MOSI_PIN D11
 #define MISO_PIN D12
@@ -27,3 +30,5 @@ void loop() {
   digitalWrite(slaveSelectPin, HIGH); // Wählen Sie den Slave ab
   delay(1000);
 }
+
+//add some initial header for structure
