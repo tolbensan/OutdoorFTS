@@ -31,4 +31,3 @@ void loop() {
   delay(1000);
 }
 
-//add some initial header for structure
