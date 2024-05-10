@@ -10,7 +10,7 @@ int currentPosition = 0; // Verfolge die aktuelle Position des Motors
 //
 
 
-void setup() {
+void setupp() {
   stepper.setMaxSpeed(5000); // Setze die maximale Geschwindigkeit (angepasst an deine Anforderungen)
   stepper.setAcceleration(2000); // Setze die Beschleunigung (angepasst an deine Anforderungen)
 }
@@ -29,7 +29,7 @@ void motorRechtsDrehen(int schritte) {
 
 }
 
-void loop() {
+void loopp() {
   // Beispiel: Drehung um 200 Schritte nach rechts
   motorRechtsDrehen(200);
   delay(1000); // Wartezeit für Stabilität
