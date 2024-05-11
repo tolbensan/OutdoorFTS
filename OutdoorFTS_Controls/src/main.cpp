@@ -29,8 +29,8 @@ void loop() {
 
   digitalWrite(slaveSelectPin, HIGH); // Wählen Sie den Slave ab
 
-  drive();
-  
+  drive(receivedValue);
+
   delay(1000);
 }
 
