@@ -28,6 +28,9 @@ void loop() {
   Serial.println(receivedValue);
 
   digitalWrite(slaveSelectPin, HIGH); // Wählen Sie den Slave ab
+
+  drive();
+  
   delay(1000);
 }
 
