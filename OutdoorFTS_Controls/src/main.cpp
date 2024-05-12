@@ -13,6 +13,7 @@ const int slaveSelectPin = 10; // Chip Select-Pin des Slave-Arduino
 void setup() {
   Serial.begin(9600);
   SPI.begin();
+  //SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0)); // Setze Taktgeschwindigkeit auf 1 MHz //Macht nur alles kaputt
   pinMode(slaveSelectPin, OUTPUT);
   pinMode(ENGINEPIN, OUTPUT);
   analogWriteResolution(12);
@@ -26,12 +27,12 @@ void loop() {
   Serial.println("Sending Stuff ...");
   //SPI.transfer(42); // Senden Sie einen Wert an den Slave
   
-  float receivedValue = SPI.transfer16(386); // Empfangen Sie den Wert vom Slave
-  Serial.println(receivedValue);
+  uint16_t receivedVal16 = SPI.transfer16(386); // Empfangen Sie den Wert vom Slave
+  Serial.println(receivedVal16);
 
   digitalWrite(slaveSelectPin, HIGH); // Wählen Sie den Slave ab
 
-  drive(receivedValue);
+  drive(receivedVal16);
 
   delay(1000);
 }
