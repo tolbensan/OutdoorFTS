@@ -5,6 +5,10 @@
 
 //int transfd_speed = 0;
 
+#define SPEEDFAKTOR 8.03696   //linearer Umrechnungsfaktor zur Bestimmung des einzustellenden 12Bit-Wert an DAC
+#define INITIAL 993.72727     //0,8 Volt Schwelle, ab der erst ein Wert beim Motor ankommt. Eigentlich 992,... aber um rundungsfehler auf 4095 auszugleichen um eins höher gesetzt.
+#define ENGINEPIN PB14
+
 void test();
 void drive(double transfd_speed);
 void emergency_brake();
@@ -21,28 +25,52 @@ void test()
 void drive(double transfd_speed)
 {
     double speed;
+    int calcd_speed;
 
     //debug indicator on serial monitor
-    Serial.println("This is drive function ...");
+    Serial.print("This is drive function ...");
 
     //calculate enginespeed out of received speeddata
-    Serial.println(transfd_speed);
-    Serial.println(speed);
+    speed = transfd_speed * SPEEDFAKTOR + INITIAL;
+    calcd_speed = speed;
+    Serial.print("received speed: ");
+    Serial.print(transfd_speed);
+    Serial.print(" | calculated speed: ");
+    Serial.print(speed);
+    Serial.print(" | set speed: ");
+    Serial.println(calcd_speed);
+
+    analogWrite(ENGINEPIN, calcd_speed);
+
 
     //acceleration for engine on gpio pins
-    // Setze den OutputPin auf 0,7 V
-    analogWrite(PB14, (0.7 / 3.3) * 4095); // Berechne Wert für 0,7 V
-    delay(1000); // 1 Sekunde warten
+    /*
+    for (int brightness = 0; brightness <= 4095; brightness += 10) {
+      analogWrite(ENGINEPIN, brightness); // Helligkeit setzen
+      Serial.println(brightness);
+      delay(50); // Kurze Pause für den Übergang
+    }
+    */
+/*
+analogWrite(motorPin, 0);
+  delay(1000); // 1 Sekunde warten
 
-    // Setze den OutputPin auf 1,7 V
-    analogWrite(PB14, (1.7 / 3.3) * 4095); // Berechne Wert für 1,7 V
-    delay(1000); // 1 Sekunde warten
+  // Beschleunige den Motor in Stufen
+  for (int i = 0; i <= 4095; i++) {
+    analogWrite(motorPin, i); // Spannung von 0 V bis 3,3 V
+    delay(10); // 10 ms warten
+  }
 
-    // Setze den OutputPin auf 3,3 V
-    analogWrite(PB14, 4095); // Maximaler Wert für 3,3 V
-    delay(1000); // 1 Sekunde warten
-    //std::cout << "I'm drivin" << std::endl;    //printf("I'm drivin");
+  // Halte die maximale Spannung (3,3 V) für 1 Sekunde
+  analogWrite(motorPin, 4095);
+  delay(1000);
 
+  // Bremse den Motor in Stufen ab
+  for (int i = 4095; i >= 0; i--) {
+    analogWrite(motorPin, i); // Spannung von 3,3 V bis 0 V
+    delay(10); // 10 ms warten
+  }
+  */
 }
 
 
@@ -81,7 +109,7 @@ void steer()
   
   // put your setup code here, to run once:
   //int result = myFunction(2, 3);
-  //pinMode(ledPin, OUTPUT); // LED-Pin als Output konfigurieren
+  //pinMode(ledPin, OUTPUT); // ledPin als Output konfigurieren
   // OutputPin als Analog-Output konfigurieren
   //analogWriteResolution(12); // 12 Bit Auflösung für Analogausgabe
   //pinMode(PB14, OUTPUT);

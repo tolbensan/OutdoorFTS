@@ -14,6 +14,8 @@ void setup() {
   Serial.begin(9600);
   SPI.begin();
   pinMode(slaveSelectPin, OUTPUT);
+  pinMode(ENGINEPIN, OUTPUT);
+  analogWriteResolution(12);
   digitalWrite(slaveSelectPin, HIGH); // Setzen Sie den Chip Select-Pin zu High, um die Kommunikation zu beginnen
   Serial.println("Initialized, ready to go:");
 }
@@ -24,7 +26,7 @@ void loop() {
   Serial.println("Sending Stuff ...");
   //SPI.transfer(42); // Senden Sie einen Wert an den Slave
   
-  int receivedValue = SPI.transfer(45); // Empfangen Sie den Wert vom Slave
+  float receivedValue = SPI.transfer16(386); // Empfangen Sie den Wert vom Slave
   Serial.println(receivedValue);
 
   digitalWrite(slaveSelectPin, HIGH); // Wählen Sie den Slave ab
