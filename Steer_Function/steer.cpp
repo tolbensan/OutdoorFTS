@@ -6,19 +6,15 @@
 
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIR_PIN); // Erstelle einen Schrittmotorobjekt
 const int EEPROM_ADDRESS = 0; // Adresse im EEPROM, um die Position zu speichern
-long currentPosition = 0; // Verfolge die aktuelle Position des Motors
+long currentPosition; // Verfolge die aktuelle Position des Motors
 
 // Definiere die virtuellen Anschläge
 const int MIN_POSITION = -200;
 const int MAX_POSITION = 200;
 
-//200Steps = 1 Umdrehung = 360°
+void setup() {
+  Serial.begin(9600);
 
-void steer(double transfd_steerangle){
-  
-}
-
-void steersetup() {
   // Setze Step- und Direction-Pins auf Ausgang
   pinMode(STEP_PIN, OUTPUT);
   pinMode(DIR_PIN, OUTPUT);
@@ -49,7 +45,6 @@ void steersetup() {
   Serial.println("Geben Sie 'L <Schritte>' für Linksdrehung oder 'R <Schritte>' für Rechtsdrehung ein.");
 }
 
-
 void motorLinksDrehen(int schritte) {
   long newPosition = currentPosition - schritte;
   if (newPosition < MIN_POSITION) {
@@ -76,11 +71,24 @@ void motorRechtsDrehen(int schritte) {
   Serial.println(currentPosition);
 }
 
-void loopp() {
-  // Beispiel: Drehung um 200 Schritte nach rechts
-  motorRechtsDrehen(200);
-  delay(1000); // Wartezeit für Stabilität
-  motorLinksDrehen(100);
-  delay(1000);
-}
+void loop() {
+  if (Serial.available() > 0) {
+    String input = Serial.readStringUntil('\n'); // Lese die serielle Eingabe bis zum Zeilenumbruch
+    input.trim(); // Entferne führende und nachfolgende Leerzeichen
 
+    if (input.length() > 1) {
+      char direction = input.charAt(0); // Erster Charakter als Richtung (L oder R)
+      int steps = input.substring(1).toInt(); // Der Rest als Schritte
+
+      if (direction == 'L' || direction == 'l') {
+        motorLinksDrehen(steps);
+      } else if (direction == 'R' || direction == 'r') {
+        motorRechtsDrehen(steps);
+      } else {
+        Serial.println("Ungültiger Befehl. Verwenden Sie 'L <Schritte>' oder 'R <Schritte>'.");
+      }
+    } else {
+      Serial.println("Ungültiger Befehl. Verwenden Sie 'L <Schritte>' oder 'R <Schritte>'.");
+    }
+  }
+}

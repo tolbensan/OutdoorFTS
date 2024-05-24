@@ -23,28 +23,31 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(slaveSelectPin, LOW); // Wählen Sie den Slave aus
+  int speedData;
+  int steerData;
+  int CompleteValue = 0b1100100101110000; //1100100101110000
 
+
+  digitalWrite(slaveSelectPin, LOW); // Wählen Sie den Slave aus
   Serial.println("Sending Stuff ...");
-  //SPI.transfer(42); // Senden Sie einen Wert an den Slave
-  
   uint16_t receivedVal16 = SPI.transfer16(uint16_t(25)); // Empfangen Sie den Wert vom Slave
-  //delay(100);
-  //uint16_t receivedVal1 = SPI.transfer(130); // Empfangen Sie den Wert vom Slave
 
   Serial.println(receivedVal16);
-  //Serial.println(receivedVal1);
-
   digitalWrite(slaveSelectPin, HIGH); // Wählen Sie den Slave ab
 
-  drive(receivedVal16);
+  speedData = (receivedVal16 >> 9) & 0x7F;
+  steerData = receivedVal16 & 0x01FF;
 
+  Serial.println(speedData);
+  Serial.println(steerData);
 
+  drive(speedData);
+  steer(steerData);
   
   uint16_t dataToSend = receivedVal16; // Dein Wert, den du senden möchtest
   uint16_t reversedData = (dataToSend << 8) | (dataToSend >> 8); // Umkehrung der Byte-Reihenfolge
 
-  drive(reversedData);
+  //drive(reversedData);
   
   delay(1000);
 }
