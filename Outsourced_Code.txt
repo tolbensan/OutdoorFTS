@@ -72,3 +72,16 @@ String receiveData() {
 
 
 
+
+struct comm
+{
+    int speedData;
+    int steerData;
+};
+
+struct comm comm_func() {
+    struct comm received;
+    received.speedData = (receivedVal16 >> 9) & 0x7F;
+    received.steerData = receivedVal16 & 0x01FF;
+    return received;
+};
