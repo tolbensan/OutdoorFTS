@@ -1,0 +1,74 @@
+/*
+void sendData(String data) {
+  // Aktiviere den ESP32 Chip Select
+  digitalWrite(STM32_CHIP_SELECT_PIN, LOW);
+
+  // Sende die Daten an den ESP32
+  for (int i = 0; i < data.length(); i++) {
+    SPI.transfer(data[i]);
+  }
+
+  // Deaktiviere den ESP32 Chip Select
+  digitalWrite(STM32_CHIP_SELECT_PIN, HIGH);
+}
+
+String receiveData() {
+  String response = "";
+
+  // Aktiviere den ESP32 Chip Select
+  digitalWrite(STM32_CHIP_SELECT_PIN, LOW);
+
+  // Empfange Daten vom ESP32
+  while (SPI.available()) {
+    response += (char)SPI.transfer(0);
+  }
+
+  // Deaktiviere den ESP32 Chip Select
+  digitalWrite(STM32_CHIP_SELECT_PIN, HIGH);
+
+  return response;
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //acceleration for engine on gpio pins
+    /*
+    for (int brightness = 0; brightness <= 4095; brightness += 10) {
+      analogWrite(ENGINEPIN, brightness); // Helligkeit setzen
+      Serial.println(brightness);
+      delay(50); // Kurze Pause für den Übergang
+    }
+    analogWrite(motorPin, 0);
+    delay(1000); // 1 Sekunde warten
+
+    // Beschleunige den Motor in Stufen
+    for (int i = 0; i <= 4095; i++) {
+      analogWrite(motorPin, i); // Spannung von 0 V bis 3,3 V
+      delay(10); // 10 ms warten
+    }
+
+    // Halte die maximale Spannung (3,3 V) für 1 Sekunde
+    analogWrite(motorPin, 4095);
+    delay(1000);
+
+    // Bremse den Motor in Stufen ab
+    for (int i = 4095; i >= 0; i--) {
+      analogWrite(motorPin, i); // Spannung von 3,3 V bis 0 V
+      delay(10); // 10 ms warten
+    }
+    */
+
+
+
