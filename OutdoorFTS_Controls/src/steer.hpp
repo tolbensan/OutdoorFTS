@@ -14,11 +14,31 @@ const int MAX_POSITION = 200;
 
 //200Steps = 1 Umdrehung = 360°
 
-void steer(double transfd_steerangle){
-  
+void motorLinksDrehen(int schritte);
+void motorRechtsDrehen(int schritte);
+
+
+void steer(int transfd_steerangle){
+  if (transfd_steerangle < 64){
+    motorLinksDrehen(transfd_steerangle);
+  }
+  if (transfd_steerangle > 64){
+    motorRechtsDrehen(transfd_steerangle - 64);
+  }
+  if (transfd_steerangle == 64){
+    if (currentPosition != 0) {
+    stepper.moveTo(-currentPosition);
+    stepper.runToPosition();
+    currentPosition = 0;
+    EEPROM.put(EEPROM_ADDRESS, currentPosition); // Setze die gespeicherte Position auf 0
+    Serial.println("Schrittmotor auf Position 0 zurückgefahren und Position auf 0 gesetzt.");
+  } else {
+    Serial.println("Schrittmotor befindet sich bereits auf Position 0.");
+  }
+  }
 }
 
-void steersetup() {
+void steerSetup() {
   // Setze Step- und Direction-Pins auf Ausgang
   pinMode(STEP_PIN, OUTPUT);
   pinMode(DIR_PIN, OUTPUT);
@@ -75,12 +95,3 @@ void motorRechtsDrehen(int schritte) {
   Serial.print("Position nach rechts drehen gespeichert: ");
   Serial.println(currentPosition);
 }
-
-void loopp() {
-  // Beispiel: Drehung um 200 Schritte nach rechts
-  motorRechtsDrehen(200);
-  delay(1000); // Wartezeit für Stabilität
-  motorLinksDrehen(100);
-  delay(1000);
-}
-
