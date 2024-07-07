@@ -8,35 +8,29 @@ void setup() {
   steerSetup();
   commSetup();
   
-  Serial.println("Initialized, ready to go:");
+  Serial.println("Initialized, ready to go:");  //debug
 }
 
 void loop() {
   int speedData;
   int steerData;
-  int CompleteValue = 0b1100100101110000; //1100100101110000
 
+  digitalWrite(chipSelectPin, LOW);         // select a chip
+  Serial.println("Receiving Stuff ...");        //debug
+  uint16_t receivedVal = SPI.transfer16(0); // receive val from chip
+  digitalWrite(chipSelectPin, HIGH);        // deselect the chip 
 
-  digitalWrite(chipSelectPin, LOW); // Wählen Sie den Slave aus
-  Serial.println("Sending Stuff ...");
-  uint16_t receivedVal16 = SPI.transfer16(uint16_t(25)); // Empfangen Sie den Wert vom Slave
-  digitalWrite(chipSelectPin, HIGH); // Wählen Sie den Slave ab
-
-  Serial.println(receivedVal16);
+  Serial.println(receivedVal);                  //debug
   
-  speedData = (receivedVal16 >> 9) & 0x7F;
-  steerData = receivedVal16 & 0x01FF;
+  //split received data into speed and steer data
+  steerData = (receivedVal >> 9) & 0x7F; 
+  speedData = receivedVal & 0x01FF;  
 
-  Serial.println(speedData);
-  Serial.println(steerData);
+  Serial.println(speedData);                    //debug
+  Serial.println(steerData);                    //debug
 
   drive(speedData);
   steer(steerData);
-  
-  uint16_t dataToSend = receivedVal16; // Dein Wert, den du senden möchtest
-  uint16_t reversedData = (dataToSend << 8) | (dataToSend >> 8); // Umkehrung der Byte-Reihenfolge
-
-  //drive(reversedData);
   
   delay(1000);
 }
