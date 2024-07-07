@@ -5,60 +5,57 @@
 #define INITIAL 993.72727     //0,8 Volt Schwelle, ab der erst ein Wert beim Motor ankommt. Eigentlich 992,... aber um rundungsfehler auf 4095 auszugleichen um eins höher gesetzt.
 #define ENGINEPIN PB14
 #define BRAKEPIN PB5
+#define EMCYBRAKEPIN PB3
 
 void driveSetup();
-void drive(double transfd_speed);
-void emergency_brake();
-void brake();
-void steer();
-
-
+int drive(double transfd_speed);
+void brake(int calcd_speed);
+void emergency_brake(int calcd_speed);
 
 void driveSetup()
 {
   pinMode(ENGINEPIN, OUTPUT);
   pinMode(BRAKEPIN, OUTPUT);
+  pinMode(EMCYBRAKEPIN, OUTPUT);
   analogWriteResolution(12);
 }
 
-void drive(double transfd_speed)
+int drive(double transfd_speed)
 {
     double speed;
     int calcd_speed;
-
-    //debug indicator on serial monitor
+    // Just debugging stuff ...
     Serial.print("This is drive function ...");
 
-    //calculate enginespeed out of received speeddata
+    // Calculate engine speed out of received speed data
     speed = transfd_speed * SPEEDFAKTOR + INITIAL;
-    calcd_speed = speed;
+    calcd_speed = static_cast<int>(speed);
     Serial.print("received speed: ");
     Serial.print(transfd_speed);
     Serial.print(" | calculated speed: ");
     Serial.print(speed);
     Serial.print(" | set speed: ");
     Serial.println(calcd_speed);
-
+    // set engine to calculated speed
     analogWrite(ENGINEPIN, calcd_speed);
+
+    return calcd_speed;
 }
 
+void brake(int calcd_speed)  
+{
+    Serial.println("This is brake function ...");
+    digitalWrite(BRAKEPIN, HIGH);
+    if (calcd_speed <= 100) {
+        digitalWrite(BRAKEPIN, LOW);
+    }
+}
 
-void emergency_brake()
+void emergency_brake(int calcd_speed) // for redundancy
 {
     Serial.println("This is emergency brake ...");
-    //Untersuchen ob es verschiedene Möglichkeiten gibt zu bremsen und ob diese den Throttle überschreibt
-    digitalWrite(BRAKEPIN, HIGH);
-    //create connection between brake signals
-    //std::cout << "Emergency! I'm brakin." << std::endl;     //printf("Emergency! I'm brakin.");
+    digitalWrite(EMCYBRAKEPIN, HIGH);
+    if (calcd_speed == 0) {
+        digitalWrite(BRAKEPIN, LOW);
+    }
 }
-
-
-void brake()
-{
-
-    Serial.println("This is brake function ...");
-    /*Untersuchen ob es verschiedene Möglichkeiten gibt zu bremsen und ob diese den Throttle überschreibt*/
-    digitalWrite(BRAKEPIN, HIGH);
-    //create connection between brake signals
-    //std::cout << "This is brake_func" << std::endl;         //("This is brake_func");
-}  
